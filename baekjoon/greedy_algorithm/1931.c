@@ -43,15 +43,16 @@ int main(void)
     while (++i < n)
         scanf("%d %d", &t[i].start, &t[i].end);
     qsort(t, n, sizeof(t_time), cmp);
+    // 끝나는 시간이 빠른 순으로 정렬, 같으면 시작 시간이 빠른 순으로 정렬
     i = -1;
     last = 0;
     count = 0;
     while (++i < n)
     {
-        if (t[i].start >= last)
+        if (t[i].start >= last) // 이전 종료시간 이후 시작되는 회의
         {
-            last = t[i].end;
-            count++;
+            last = t[i].end; // 끝나는 시간 저장
+            count++; // 회의 개수
         }
     }
     printf("%d", count);

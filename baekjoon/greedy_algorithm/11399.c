@@ -19,11 +19,27 @@ int main(void)
     i = -1;
     while (++i < n)
         scanf("%d", &p[i]);
-    qsort(p, n, sizeof(int), cmp);
+    qsort(p, n, sizeof(int), cmp); //오름차순 정렬
     i = -1;
     sum = 0;
     while (++i < n)
-        sum = sum + p[i] * (n - i);
+        sum = sum + p[i] * (n - i); //합계 구하기
     printf("%d", sum);
     return (0);
 }
+/* 참고
+5
+3 1 4 3 2
+
+1  1                 = 1
+2  1 + 2             = 3
+3  1 + 2 + 3         = 6
+3  1 + 2 + 3 + 3     = 9
+4  1 + 2 + 3 + 3 + 4 = 13
+
+-> 1 + 3 + 6 + 9 + 13 = 32 
+
+or
+
+1*5 + 2*4 + 3*3 + 3*2 + 4*1 = 32
+*/
