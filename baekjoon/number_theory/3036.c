@@ -29,7 +29,7 @@ int main(void)
     {
         scanf("%d", &r[i]);
         if (i != 0)
-           div[i] = euclid(r[0], r[i]);
+           div[i] = euclid(r[0], r[i]);//유클리드 - 최대공약수 구하기
     }
     i = 0;
     while (r[++i])

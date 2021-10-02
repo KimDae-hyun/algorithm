@@ -30,14 +30,15 @@ int main(void)
     while (++i < t)
     {
         scanf("%d %d", &a, &b);
-        if (a < b)
+        if (a < b) // 오름차순 정렬
         {
             n = a;
             a = b;
             b = n;
         }
-        n = euclid(a, b);
+        n = euclid(a, b); // 유클리드 - 최대공약수 구하기
         printf("%d\n", a * b / n);
+		// 두 수의 곱을 최대공약수로 나누면 최소공배수
     }
     return (0);
 }
