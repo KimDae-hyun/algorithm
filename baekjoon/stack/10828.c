@@ -3,11 +3,11 @@
 
 int main(void)
 {
-    char str[10] = {0};
-    int stack[10000] = {0};
-    int n;
-    int i;
-    int p;
+    char str[10] = {0}; // 명령어를 입력 받을 문자열. 넉넉하게 10
+    int stack[10000] = {0}; // 입력받은 숫자를 담을 스택
+    int n; // 입력할 명령어 개수
+    int i; // 카운트
+    int p; // 스택의 인덱스
     
     scanf("%d", &n);
     i = -1;
