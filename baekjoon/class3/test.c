@@ -4,12 +4,9 @@
 
 int cmp(const void *a, const void *b)
 {
-    if (strcmp((char *)a, (char *)b) < 0)
+    if (strcmp(*(char **)a, *(char **)b) > 0)
         return (1);
-    else if (strcmp((char *)a, (char *)b) > 0)
-    	return (-1);
-    else
-	    return(0);
+    return (0);
 }
 
 int main(void)
@@ -20,8 +17,7 @@ int main(void)
     int m;
     int i;
     int j;
-    int check;
-    
+
     scanf("%d %d", &n, &m);
     listen = (char **)calloc(n + m + 1, sizeof(char *));
     sort = (char **)calloc(m + 1, sizeof(char *));
@@ -33,25 +29,19 @@ int main(void)
             sort[i] = (char *)calloc(21, sizeof(char));
         scanf("%s", listen[i]);
     }
-    j = n + m;
-    qsort(listen, j, sizeof(char *), cmp);
-i = -1;
-while (++i < n + m)
-	printf("s %s\n", listen[i]);
+    qsort(listen, n + m, sizeof(char *), cmp);
     i = -1;
     j = 0;
-    check = 0;
     while (++i < n + m - 1)
-    {
         if (strcmp(listen[i], listen[i + 1]) == 0)
-           sort[j++] = listen[i];
-    }
+            sort[j++] = listen[i];
     printf("%d\n", j);
+    qsort(sort, j, sizeof(char *), cmp);
     i = -1;
     while (++i < j)
         printf("%s\n", sort[i]);
     i = -1;
-    while (++i < n)
+    while (++i < n + m)
     {
         free(listen[i]);
         if (i < m)
@@ -61,3 +51,4 @@ while (++i < n + m)
     free(sort);
     return (0);
 }
+
