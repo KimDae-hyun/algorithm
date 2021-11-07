@@ -8,13 +8,11 @@ typedef struct s_point
 	int y;
 }            t_point;
 
-int find(t_point *t, int start, int end, int min, int flag);
+int find(t_point *t, int start, int end, int *min, int flag);
 
 int cmp(const void *a, const void *b)
 {
-	if ((*(t_point *)a).x > (*(t_point *)b).x)
-		return (1);
-	return (-1);
+	return ((*(t_point *)a).x - (*(t_point *)b).x);
 }
 
 int dist(t_point *t, int start, int end)
@@ -23,15 +21,15 @@ int dist(t_point *t, int start, int end)
 			+ (t[end].y - t[start].y) * (t[end].y - t[start].y));
 }
 
-int y_find(t_point *t, int start, int end, int min)
+int y_find(t_point *t, int start, int end, int *min)
 {
 	int i;
 	int size;
 	t_point *y;
 
 	size = end - start + 1;
-	if (size <= 3)
-		return (min);
+	if (size <= 3 || *min == 0)
+		return (*min);
 	y = (t_point *)calloc(size, sizeof(t_point));
 	i = -1;
 	while (++i < size)
@@ -40,18 +38,19 @@ int y_find(t_point *t, int start, int end, int min)
 		y[i].x = t[start++].y;
 	}
 	qsort(y, size, sizeof(t_point), cmp);
-	min = find(y, 0, size - 1, min, 1);
-	return (min);
+	*min = find(y, 0, size - 1, min, 1);
+    free(y);
+	return (*min);
 }
 
-int find(t_point *t, int start, int end, int min, int flag)
+int find(t_point *t, int start, int end, int *min, int flag)
 {
 	int i;
 	int j;
 	int d;
 	int mid;
 
-	if (min == 0)
+	if (*min == 0)
 		return (0);
 	if (end - start <= 2)
 	{
@@ -62,96 +61,111 @@ int find(t_point *t, int start, int end, int min, int flag)
 			while (++j <= end)
 			{
 				d = dist(t, i, j);
-				if (d < min)
-					min = d;
+				if (d < *min)
+					*min = d;
 			}
 		}
-		return (min);
+		return (*min);
 	}
 	mid = (start + end) / 2;
 	d = find(t, start, mid, min, flag);
-	if (d < min)
-		min = d;
-	if (min == 0)
-		return (0);
+	if (d < *min)
+		*min = d;
 	d = find(t, mid, end, min, flag);
-	if (d < min)
-		min = d;
-	if (min == 0)
+	if (d < *min)
+		*min = d;
+	if (*min == 0)
 		return (0);
 
 	if (flag == 1)
 	{
-		if (t[mid].x - t[start].x <= min)
+		if (((t[mid].x - t[start].x) * (t[mid].x - t[start].x) <= *min) && \
+		 ((t[end].x - t[mid].x) * (t[end].x - t[mid].x) <= *min))
 		{
 			i = start - 1;
 			while (++i < mid + 1)
-			{
-				j = mid + 1;
-				while ((t[j].x - t[mid].x) * (t[j].x - t[mid].x) <= min)
-				{
-					d = dist(t, i, j);
-					if (d < min)
-						min = d;
-					if (j++ == end)
-						break ;
-				}
-			}
-		}
-		if (t[end].x - t[mid].x <= min)
-		{
-			i = mid;
-			while ((t[mid].x - t[i].x) * (t[mid].x - t[i].x) <= min)
 			{
 				j = mid;
 				while (++j <= end)
 				{
 					d = dist(t, i, j);
-					if (d < min)
-						min = d;
+					if (d < *min)
+						*min = d;
+				}
+			}
+			return (*min);
+		}
+		if ((t[mid].x - t[start].x) * (t[mid].x - t[start].x) <= *min)
+		{
+			i = start - 1;
+			while (++i < mid + 1)
+			{
+				j = mid + 1;
+				while ((t[j].x - t[mid].x) * (t[j].x - t[mid].x) <= *min)
+				{
+					d = dist(t, i, j);
+					if (d < *min)
+						*min = d;
+					if (j++ == end)
+						break ;
+				}
+			}
+		}
+		if ((t[end].x - t[mid].x) * (t[end].x - t[mid].x) <= *min)
+		{
+			i = mid - 1;
+			while ((t[mid].x - t[i].x) * (t[mid].x - t[i].x) <= *min)
+			{
+				j = mid - 1;
+				while (++j <= end)
+				{
+					d = dist(t, i, j);
+					if (d < *min)
+						*min = d;
 				}
 				if (i-- == start)
 					break ;
 			}
 		}
-		return (min);
+		return (*min);
 	}
-	if ((t[mid].x - t[start].x < min) && (t[end].x - t[mid].x < min))
+	if (((t[mid].x - t[start].x) <= *min) && \
+		 ((t[end].x - t[mid].x) <= *min))
 	{
 		d = y_find(t, start, end, min);
-		if (d < min)
-			min = d;
-		if (min == 0)
+		if (d < *min)
+			*min = d;
+		if (*min == 0)
 			return (0);
 	}
 	else
 	{
-		if (t[mid].x - t[start].x < min)
+		if ((t[mid].x - t[start].x) * (t[mid].x - t[start].x)  <= *min)
 		{
-			i = mid;
-			while (t[++i].x - t[mid].x < mid)
-				if (i == end)
+			i = mid + 1;
+			while ((t[i].x - t[mid].x) * (t[i].x - t[mid].x) <= *min)
+				if (i++ == end)
 					break ;
 			d = y_find(t, start, i, min);
-			if (d < min)
-				min = d;
-			if (min == 0)
+			if (d < *min)
+				*min = d;
+			if (*min == 0)
 				return (0);
 		}
-		if (t[end].x - t[mid].x < min)
+		if ((t[end].x - t[mid].x) * (t[end].x - t[mid].x) <= *min)
 		{
-			i = mid;
-			while (t[mid].x - t[--i].x < mid)
-				if (i == start)
+			i = mid - 1;
+			while ((t[mid].x - t[i].x) * (t[mid].x - t[i].x) <= *min)
+				if (i-- == start)
 					break ;
 			d = y_find(t, i, end, min);
-			if (d < min)
-				min = d;
-			if (min == 0)
+			if (d < *min)
+				*min = d;
+			if (*min == 0)
 				return (0);
 		}
 	}
-	return (min);
+	return (*min);
 }
 
 int main(void)
@@ -167,7 +181,7 @@ int main(void)
 	while (++i < n)
 		scanf("%d %d", &(t[i].x), &(t[i].y));
 	qsort(t, n, sizeof(t_point), cmp);
-	min = dist(t, 0, 1);
-	printf("%d\n", find(t, 0, n - 1, min, 0));
+	min = dist(t, 0, n - 1);
+	printf("%d\n", find(t, 0, n - 1, &min, 0));
 	return (0);
 }
