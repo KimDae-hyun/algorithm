@@ -3,12 +3,12 @@
 
 void insert(int *heap, int x, int j)
 {
-    while ((j != 1) && heap[j / 2] < x) // 입력값이 자식 노드보다 크면
+    while ((j != 1) && heap[j / 2] < x) // 입력값이 부모 노드보다 크면
     {
-        heap[j] = heap[j / 2]; // 자식 노드를 더 아래 자식 노드로 내린다.
+        heap[j] = heap[j / 2]; // 부모 노드를 자식 노드로 내린다.
         j /= 2;
     }
-    heap[j] = x; // 부모노드보다 작고, 자식노드보다 큰 위치의 노드에 입력.
+    heap[j] = x;
 }
 
 void delete(int *heap, int j)
