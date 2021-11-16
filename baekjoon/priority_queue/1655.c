@@ -101,7 +101,7 @@ int main(void)
             max_h[1] = min_h[1];
             min_h[1] = tmp;
 
-            min_sort(min_h, min - 1); // 최소힙 재정렬
+            min_sort(min_h, min - 1); // 최소힙 재정ls렬
             max_sort(max_h, max - 1); // 최대힙 재정렬
         }
         printf("%d\n", max_h[1]); // 최대힙 최상위 값 출력
