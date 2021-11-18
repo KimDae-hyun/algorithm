@@ -5,23 +5,13 @@ int main(void)
     int x;
     int y;
     int day;
+    int month[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     std::cin >> x;
     std::cin >> y;
-    day = 0;
-    if (x > 1)
-        day = 3;
-    if (x > 3)
-    {
-        for (int i = 3; i < 13; i++)
-        {
-            if (x > i && i % 2 == 1)
-                day += 2;
-            else
-                day += 3;
-        }
-    }
-    day += y;
+    day = y;
+    for (int i = 0; i < (x - 1); i++)
+        day += month[i];
     day %= 7;
     if (day == 1)
         std::cout << "MON" << std::endl;
